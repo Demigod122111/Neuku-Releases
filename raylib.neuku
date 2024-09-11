@@ -1,0 +1,1054 @@
+	   /////////////////////////////////////////////////////////////////////////////// 
+      //                   RAYLIB NEUKU EXTRACT EDITION       					   // 
+     //  Author           : Demigod122111                                         //
+    //   Version          : v1.0.0                                               // 
+   //    Credits          : Raylib-cs (https://github.com/ChrisDill/Raylib-cs)  // 
+  //     Raylib-cs Version: v6.0.0                       					   //
+ //                                                     					  //
+///////////////////////////////////////////////////////////////////////////////
+
+
+// RayLib Neuku Application Extension File Location
+var testing = false;
+var file = testing ? "C:\\Programming\\C#\\RayLib Neuku\\bin\\Debug\\net8.0\\RayLib Neuku.dll" : "..\\dlls\\RayLib Neuku.dll";
+
+// Native RayLib Library Class
+var raylib = DLL(file, "RayLib");
+
+// Setup canvas (framebuffer) to start drawing
+function BeginDrawing(){
+	Call(raylib, "BeginDrawing");
+}
+
+// Native Camera2D Wrapper
+// Camera2D, defines position/orientation in 2d space
+class Camera2D{
+	// Camera offset (displacement from target)
+	// Vector2
+	var Offset = Vector2(0 , 0);
+	
+	// Camera target (rotation and zoom origin)
+	// Vector2
+	var Target = Vector2(0 , 0);
+	
+	// Camera rotation in degrees
+	// double
+	var Rotation = 0;
+	
+	// Camera zoom (scaling), should be 1.0 by default
+	var Zoom = 1.0;
+	
+	// Native Camera2D
+	private var camera;
+	
+	// Camera2D Constructor
+	function init(){
+		this .camera = Call(raylib, "CreateCamera2D", this .Offset.ToNative(), this .Target.ToNative(), this .Rotation, this .Zoom);
+	}
+	
+	// Initialize 2D mode with custom camera (2D; this only)
+	function Begin(){
+		Call(raylib, "BeginMode2D", this .ToNative());
+	}
+	
+	// Ends 2D mode with custom camera (all)
+	function End(){
+		Call(raylib, "EndMode2D");
+	}
+	
+	// Converts wrapper to native Camera2D
+	// Returns:
+	//		Native::Camera2D -> camera
+	function ToNative(){
+		Call(raylib, "SetObjectProperty", this .camera, "Offset", this .Offset.ToNative());
+		Call(raylib, "SetObjectProperty", this .camera, "Target", this .Target.ToNative());
+		Call(raylib, "SetObjectProperty", this .camera, "Rotation", this .Rotation);
+		Call(raylib, "SetObjectProperty", this .camera, "Zoom", this .Zoom);
+		
+		return this .camera;
+	}
+}
+
+// Check if point is inside circle
+// Accepts:
+//		Vector2 -> point
+//		Vector2 -> center
+//		double  -> radius
+// Returns:
+//		bool -> result
+function CheckCollisionPointCircle(point, center, radius){
+	return Call(raylib, "CheckCollisionPointCircle", point.ToNative(), center.ToNative(), radius);
+}
+
+// Check collision between two rectangles
+// Accepts:
+//		Rectangle -> rect1
+//		Rectangle -> rect2
+// Returns:
+//		bool -> result
+function CheckCollisionRecs(rect1, rect2){
+	return Call(raylib, "CheckCollisionRecs", rect1.ToNative(), rect2.ToNative());
+}
+
+// Set background color (framebuffer clear color)
+// Accepts:
+//		Native::Color -> color
+function ClearBackground(color){
+	Call(raylib, "ClearBackground", color);
+}
+
+// Clear window configuration state flags
+// Accepts:
+//		Native::ConfigFlags -> flags
+function ClearWindowState(flags){
+	Call(raylib, "ClearWindowState", flags);
+}
+
+// Close the audio device and context
+function CloseAudioDevice(){
+	Call(raylib, "CloseAudioDevice");
+}
+
+// Close window and unload OpenGL context
+function CloseWindow(){
+	Call(raylib, "CloseWindow");
+}
+
+// Get color with alpha applied, alpha goes from 0.0 to 1.0
+// Returns:
+// 		Native::Color -> color
+function ColorAlpha(color, alpha){
+	return Call(raylib, "ColorAlpha", color, alpha);
+}
+
+// Find and return known color
+// Accepts:
+//		string -> name
+// Returns:
+//		Native::Color -> color
+function ColorFromName(name){
+	return Call(raylib, "ColorFromName", name);
+}
+
+
+// Creates and return new color
+// Accepts:
+//		double -> r (red   component, 0 - 255)
+//		double -> g (green component, 0 - 255)
+//		double -> b (blue  component, 0 - 255)
+// Returns:
+//		Native::Color -> color
+function ColorFromRGB(r, g, b){
+	return Call(raylib, "ColorFromRGB", r, g, b);
+}
+
+// Creates and return new color
+// Accepts:
+//		double -> r (red   component, 0 - 255)
+//		double -> g (green component, 0 - 255)
+//		double -> b (blue  component, 0 - 255)
+//		double -> a (alpha component, 0 - 255)
+// Returns:
+//		Native::Color -> color
+function ColorFromRGBA(r, g, b, a){
+	return Call(raylib, "ColorFromRGBA", r, g, b, a);
+}
+
+function LIGHTGRAY() return ColorFromRGBA(200, 200, 200, 255);  // Light Gray
+function GRAY() return ColorFromRGBA(130, 130, 130, 255); // Gray
+function DARKGRAY() return ColorFromRGBA(80, 80, 80, 255); // Dark Gray
+function YELLOW() return ColorFromRGBA(253, 249, 0, 255); // Yellow
+function GOLD() return ColorFromRGBA(255, 203, 0, 255); // Gold
+function ORANGE() return ColorFromRGBA(255, 161, 0, 255); // Orange
+function PINK() return ColorFromRGBA(255, 109, 194, 255); // Pink
+function RED() return ColorFromRGBA(230, 41, 55, 255); // Red
+function MAROON() return ColorFromRGBA(190, 33, 55, 255); // Maroon
+function GREEN() return ColorFromRGBA(0, 228, 48, 255); // Green
+function LIME() return ColorFromRGBA(0, 158, 47, 255); // Lime
+function DARKGREEN() return ColorFromRGBA(0, 117, 44, 255); // Dark Green
+function SKYBLUE() return ColorFromRGBA(102, 191, 255, 255); // Sky Blue
+function BLUE() return ColorFromRGBA(0, 121, 241, 255); // Blue
+function DARKBLUE() return ColorFromRGBA(0, 82, 172, 255); // Dark Blue
+function PURPLE() return ColorFromRGBA(200, 122, 255, 255); // Purple
+function VIOLET() return ColorFromRGBA(135, 60, 190, 255); // Violet
+function DARKPURPLE() return ColorFromRGBA(112, 31, 126, 255); // Dark Purple
+function BEIGE() return ColorFromRGBA(211, 176, 131, 255); // Beige
+function BROWN() return ColorFromRGBA(127, 106, 79, 255); // Brown
+function DARKBROWN() return ColorFromRGBA(76, 63, 47, 255); // Dark Brown
+function WHITE() return ColorFromRGBA(255, 255, 255, 255); // White
+function BLACK() return ColorFromRGBA(0, 0, 0, 255); // Black
+function BLANK() return ColorFromRGBA(0, 0, 0, 0); // Blank (Transparent)
+function MAGENTA() return ColorFromRGBA(255, 0, 255, 255); // Magenta
+function RAYWHITE() return ColorFromRGBA(245, 245, 245, 255); // My own White (raylib logo)
+
+// System config flags
+// NOTE: Every bit registers one state (use it with bit masks)
+// By default all flags are set to 0
+// Accepts:
+//		string -> flags
+// Returns:
+//		Native::ConfigFlags -> flags
+// 
+// FLAGS:
+/// VSyncHint                - Set to try enabling V-Sync on GPU
+/// FullscreenMode           - Set to run program in fullscreen
+/// ResizableWindow          - Set to allow resizable window
+/// UndecoratedWindow        - Set to disable window decoration (frame and buttons)
+/// HiddenWindow             - Set to hide window
+/// MinimizedWindow          - Set to minimize window (iconify)
+/// MaximizedWindow          - Set to maximize window (expanded to monitor)
+/// UnfocusedWindow          - Set to window non focused
+/// TopmostWindow            - Set to window always on top
+/// AlwaysRunWindow          - Set to allow windows running while minimized
+/// TransparentWindow        - Set to allow transparent framebuffer
+/// HighDpiWindow            - Set to support HighDPI
+/// MousePassthroughWindow   - Set to support mouse passthrough, only supported when FLAG_WINDOW_UNDECORATED
+/// BorderlessWindowMode     - Set to run program in borderless windowed mode
+/// Msaa4xHint               - Set to try enabling MSAA 4X
+/// InterlacedHint           - Set to try enabling interlaced video format (for V3D)
+//
+// NOTE: When using multiple flags, they must be comma separated
+function ConfigFlags(flags){
+	return Call(raylib, "ConfigFlags", flags);
+}
+
+// Draw a color-filled circle
+// Accepts:
+//		Vector2 -> center
+// 		double  -> radius
+// 		Native::Color   -> color
+function DrawCircle(center, radius, color){
+	Call(raylib, "DrawCircle", center.X, center.Y, radius, color);
+}
+
+// Draw circle outline
+// Accepts:
+//		Vector2 -> center
+// 		double  -> radius
+// 		Native::Color   -> color
+function DrawCircleLines(center, radius, color){
+	Call(raylib, "DrawCircleLines", center.X, center.Y, radius, color);
+}
+
+// Shows current FPS
+// Accepts:
+//		double -> posX
+//		double -> posY
+function DrawFPS(posX, posY){
+	Call(raylib, "DrawFPS", posX, posY);
+}
+
+// Draw a color-filled rectangle
+// Accepts:
+//		Vector2 -> position
+//		Vector2 -> size
+//		Native::Color -> color
+function DrawRectangle(position, size, color){
+	Call(raylib, "DrawRectangle", position.X, position.Y, size.X, size.Y, color);
+}
+
+// Draw rectangle outline
+// Accepts:
+//		Vector2 -> position
+//		Vector2 -> size
+//		Native::Color -> color
+function DrawRectangleLines(position, size, color){
+	Call(raylib, "DrawRectangleLines", position.X, position.Y, size.X, size.Y, color);
+}
+
+// Draw color-filled rectangle
+// Accepts:
+//		Rectangle     -> rect
+//		Native::Color -> color
+function DrawRectangleRec(rect, color){
+	Call(raylib, "DrawRectangleRec", rect.ToNative(), color);
+}
+
+// Draw text (using default font)
+// Accepts:
+//		string         -> text
+//		double         -> posX
+//		double         -> posY
+//		double    	   -> fontSize
+//		Native::Color  -> color
+function DrawText(text, posX, posY, fontSize, color){
+	Call(raylib, "DrawText", text, posX, posY, fontSize, color);
+}
+
+// Draw text using font and additional parameters
+// Accepts:
+//		Native::Font  -> font
+//		string        -> text
+//		Vector2       -> position
+//		double        -> fontSize
+//		double        -> spacing
+//		Native::Color -> tint
+//		string        -> filter : Point, Bilinear, Trilinear, Anisotropic4X, Anisotropic8X, Anisotropic16X   
+function DrawTextEx(font, text, position, fontSize, spacing, tint, filter){
+	Call(raylib, "DrawTextEx", font, text, position.ToNative(), fontSize, spacing, tint, filter);
+}
+
+// End canvas drawing and swap buffers (double buffering)
+function EndDrawing(){
+	Call(raylib, "EndDrawing");
+}
+
+// Get collision rectangle for two rectangles collision
+// Accepts:
+//		Rectangle -> rect1
+//		Rectangle -> rect2
+// Returns:
+//		Rectangle -> collision_rect
+function GetCollisionRec(rect1, rect2){
+	return Rectangle.FromNative(Call(raylib, "GetCollisionRec", rect1.ToNative(), rect2.ToNative()));
+}
+
+// Get char pressed (unicode), call it multiple times for chars queued, returns 0 when the queue is empty
+// Returns:
+//		string -> char
+function GetCharPressed(){
+	return Call(raylib, "GetCharPressed");
+}
+
+// Get time in seconds from last frame drawn (delta time)
+// Returns:
+//		double -> deltaTime
+function GetFrameTime(){
+	return Call(raylib, "GetFrameTime");
+}
+
+// Get key pressed (keycode), call it multiple times for keys queued, returns 0 when queue is empty
+// Returns:
+//		double -> keycode
+function GetKeyPressed(){
+	return Call(raylib, "GetKeyPressed");
+}
+
+// Get master volume (listener)
+// Returns:
+//		double -> value
+function GetMasterVolume(){
+	return Call(raylib, "GetMasterVolume");
+}
+
+// Get mouse delta between frames
+// Returns:
+//		Vector2 -> delta
+function GetMouseDelta(){
+	return Vector2.FromNative(Call(raylib, "GetMouseDelta"));
+}
+
+// Get mouse position XY
+// Returns:
+//		Vector2 -> position
+function GetMousePosition(){
+	return Vector2.FromNative(Call(raylib, "GetMousePosition"));
+}
+
+// Get mouse wheel movement for X or Y, whichever is larger
+// Returns:
+//		double -> result
+function GetMouseWheelMove(){
+	return Call(raylib, "GetMouseWheelMove");
+}
+
+// Get mouse position X
+// Returns:
+//		double -> x
+function GetMouseX(){
+	return Call(raylib, "GetMouseX");
+}
+
+// Get mouse position Y
+// Returns:
+//		double -> y
+function GetMouseY(){
+	return Call(raylib, "GetMouseY");
+}
+
+// Get a random value between min and max (both included)
+// Accepts:
+// 		double -> min
+// 		double -> max
+function GetRandomValue(min, max) {
+	return Call(raylib, "GetRandomValue", min, max);
+}
+
+// Get current screen height
+// Returns:
+//		double -> height
+function GetScreenHeight(){
+	return Call(raylib, "GetScreenHeight");
+}
+
+// Get current screen width
+// Returns:
+// 		double -> width
+function GetScreenWidth(){
+	return Call(raylib, "GetScreenWidth");
+}
+
+// Initialize audio device and context
+function InitAudioDevice(){
+	Call(raylib, "InitAudioDevice");
+}
+
+// Initialize window and OpenGL context
+// Accepts:
+// 		double -> width
+//		double -> height
+//		string -> title
+function InitWindow(width, height, title){
+	Call(raylib, "InitWindow", width, height, title);
+}
+
+// Detect if a key is being pressed
+// Accepts:
+//		Native::KeyboardKey -> key
+// Returns:
+//		bool -> result
+function IsKeyDown(key){
+	return Call(raylib, "IsKeyDown", key);
+}
+
+// Detect if a key has been pressed once
+// Accepts:
+//		Native::KeyboardKey -> key
+// Returns:
+//		bool -> result
+function IsKeyPressed(key){
+	return Call(raylib, "IsKeyPressed", key);
+}
+
+// Detect if a key has been pressed again
+// Accepts:
+//		Native::KeyboardKey -> key
+// Returns:
+//		bool -> result
+function IsKeyPressedRepeat(key){
+	return Call(raylib, "IsKeyPressedRepeat", key);
+}
+
+// Detect if a key has been released once
+// Accepts:
+//		Native::KeyboardKey -> key
+// Returns:
+//		bool -> result
+function IsKeyReleased(key){
+	return Call(raylib, "IsKeyReleased", key);
+}
+
+// Detect if a key is NOT being pressed
+// Accepts:
+//		Native::KeyboardKey -> key
+// Returns:
+//		bool -> result
+function IsKeyUp(key){
+	return Call(raylib, "IsKeyUp", key);
+}
+
+// Detect if a mouse button is being pressed
+// Accepts:
+//		Native::MouseButton -> button
+// Returns:
+//		bool -> result
+function IsMouseButtonDown(button){
+	return Call(raylib, "IsMouseButtonDown", button);
+}
+
+// Detect if a mouse button has been pressed once
+// Accepts:
+//		Native::MouseButton -> button
+// Returns:
+//		bool -> result
+function IsMouseButtonPressed(button){
+	return Call(raylib, "IsMouseButtonPressed", button);
+}
+
+// Detect if a mouse button has been released once
+// Accepts:
+//		Native::MouseButton -> button
+// Returns:
+//		bool -> result
+function IsMouseButtonReleased(button){
+	return Call(raylib, "IsMouseButtonReleased", button);
+}
+
+// Detect if a mouse button is NOT being pressed
+// Accepts:
+//		Native::MouseButton -> button
+// Returns:
+//		bool -> result
+function IsMouseButtonUp(button){
+	return Call(raylib, "IsMouseButtonUp", button);
+}
+
+// Check if one specific window flag is enabled
+// Accepts:
+//		Native::ConfigFlags -> flag
+// Returns:
+//		bool -> result
+function IsWindowState(flag){
+	return Call(raylib, "IsWindowState", flag);
+}	
+
+// Get KeyboardKey by name (US Keyboard Layout)
+// NOTE: Use GetKeyPressed() to allow redefining required keys for alternative layouts
+// Accepts: 
+//		string -> key
+// Returns: 
+// 		Native::KeyboardKey -> key
+//
+/// Accepted Values: 
+//		Null - used for no key pressed (0)
+//		Apostrophe 
+//		Comma
+//		Minus
+//		Period 
+//		Slash
+//		Zero 
+//		One
+//		Two
+//		Three
+//		Four
+//		Five
+//		Six
+//		Seven
+//		Eight
+//		Nine 
+//		Semicolon
+//		Equal
+//		A 
+//		B 
+//		C 
+//		D 
+//		E 
+//		F 
+//		G 
+//		H 
+//		I 
+//		J 
+//		K 
+//		L 
+//		M 
+//		N 
+//		O
+//		P
+//		Q
+//		R
+//		S
+//		T
+//		U
+//		V
+//		W
+//		X
+//		Y
+//		Z
+//		Space
+//		Escape
+//		Enter
+//		Tab
+//		Backspace
+//		Insert
+//		Delete
+//		Right
+//		Left
+//		Down
+//		Up
+//		PageUp
+//		PageDown
+//		Home
+//		End
+//		CapsLock
+//		ScrollLock
+//		NumLock
+//		PrintScreen
+//		Pause
+//		F1
+//		F2
+//		F3
+//		F4 
+//		F5 
+//		F6 
+//		F7 
+//		F8 
+//		F9 
+//		F10
+//		F11
+//		F12
+//		LeftShift
+//		LeftControl
+//		LeftAlt
+//		LeftSuper
+//		RightShift
+//		RightControl 
+//		RightAlt
+//		RightSuper
+//		KeyboardMenu
+//		LeftBracket
+//		Backslash
+//		RightBracket
+//		Grave
+//		Kp0
+//		Kp1
+//		Kp2
+//		Kp3
+//		Kp4
+//		Kp5
+//		Kp6
+//		Kp7
+//		Kp8
+//		Kp9
+//		KpDecimal
+//		KpDivide
+//		KpMultiply
+//		KpSubtract
+//		KpAdd
+//		KpEnter
+//		KpEqual
+//		Back
+//		Menu
+//		VolumeUp
+//		VolumeDown
+function KeyboardKey(key){
+	return Call(raylib, "KeyboardKey", key);
+}
+
+// Load font from file into GPU memory (VRAM)
+// Accepts:
+//		string -> file
+// Returns:
+//		Native::Font -> font 
+function LoadFont(file){
+	return Call(raylib, "LoadFont", file);
+}
+
+// Measure string width for default font
+// Accepts:
+//		string -> text
+//		double -> fontSize
+// Returns:
+//		double -> result
+function MeasureText(text, fontSize){
+	return Call(raylib, "MeasureText", text, fontSize);
+}
+
+// Measure string width for default font
+// Accepts:
+//		Native::Font -> font 
+//		string       -> text
+//		double       -> fontSize
+//		double       -> spacing
+// Returns:
+//		Vector2 -> result
+function MeasureTextEx(font, text, fontSize, spacing){
+	return Vector2.FromNative(Call(raylib, "MeasureTextEx", font, text, fontSize, spacing));
+}
+
+// Get MouseButton by name
+// Accepts: 
+//		string -> key
+// Returns: 
+// 		Native::MouseButton -> button
+//
+/// Accepted Values:
+//  	Left    - Mouse button left
+//		Right   - Mouse button right
+//		Middle  - Mouse button middle  (pressed wheel)
+//		Side    - Mouse button side    (advanced mouse device)
+//		Extra   - Mouse button extra   (advanced mouse device)
+//		Forward - Mouse button forward (advanced mouse device)
+//		Back    - Mouse button back    (advanced mouse device)
+function MouseButton(button){
+	return Call(raylib, "MouseButton", button);
+}
+
+// Native Music Wrapper
+// Music stream type (audio file streaming from memory)
+// NOTE: Anything longer than ~10 seconds should be streamed
+class Music {
+
+	// Music looping enable
+	// bool
+	var Looping = false;
+	
+	// Native Music
+	private var music;
+	
+	// Music pitch
+	// double
+	var Pitch = 1;
+	
+	// Music Constructor
+	// Accepts:
+	//		string -> file
+	function init(file){
+		this .music = Call(raylib, "LoadMusicStream", file);
+	}
+	
+	// Get music time length (in seconds)
+	function GetMusicTimeLength() {
+		return Call(raylib, "GetMusicTimeLength", this .ToNative());
+	}
+
+	// Get current music time played (in seconds)
+	function GetMusicTimePlayed() {
+		return Call(raylib, "GetMusicTimePlayed", this .ToNative());
+	}
+	
+	// Start music playing (this only)
+	function Play(){
+		this.Stop();
+		Call(raylib, "PlayMusicStream", this .ToNative());
+	}
+	
+	// Resume playing paused music (this only)
+	function Resume(){
+		Call(raylib, "ResumeMusicStream", this .ToNative());
+	}
+	
+	// Pause music playing (this only)
+	function Pause(){
+		Call(raylib, "PauseMusicStream", this .ToNative());
+	}
+	
+	// Stop music playing (this only)
+	function Stop(){
+		Call(raylib, "StopMusicStream", this .ToNative());
+	}
+	
+	// Unload music stream (this only)
+	function Unload(){
+		Call(raylib, "UnloadMusicStream", this .ToNative());
+	}
+	
+	// Updates buffers for music streaming (this only)
+	function Update(){
+		Call(raylib, "UpdateMusicStream", this .ToNative());
+	}
+	
+	// Converts wrapper to native Music
+	// Returns:
+	//		Native::Music -> music
+	function ToNative(){
+		var looping = Call(raylib, "CBool", this .Looping);
+		Call(raylib, "SetObjectProperty", this .music, "Looping", looping);
+		Call(raylib, "SetMusicPitch", this .music, this .Pitch);
+		return this .music;
+	}
+}
+
+// Native Rectangle Wrapper
+class Rectangle {
+	// Native Rectangle
+	private var rectangle;
+	
+	static function ZERO() return Rectangle(Vector2(0, 0), Vector2(0, 0));
+	
+	// Rectangle Constructor
+	// Accepts:
+	//		Vector2 -> position
+	//		Vector2 -> size
+	function init(position, size){
+		this .rectangle = Call(raylib, "CreateRectangle", position.X, position.Y, size.X, size.Y);
+	}
+	
+	// Returns rectangle socation
+	// Returns:
+	//		Vector2 -> position
+	function GetPosition(){
+		return Vector2.FromNative(Call(raylib, "GetObjectProperty", this .rectangle, "Position"));
+	}
+	
+	// Returns rectangle size
+	// Returns:
+	//		Vector2 -> position
+	function GetSize(){
+		return Vector2.FromNative(Call(raylib, "GetObjectProperty", this .rectangle, "Size"));
+	}
+	
+	// Set rectangle position
+	// Accepts:
+	//		Vector2 -> position
+	function SetPosition(position){
+		Call(raylib, "SetObjectProperty", this .rectangle, "Position", position.ToNative());
+	}
+	
+	// Set rectangle size
+	// Accepts:
+	//		Vector2 -> size
+	function SetSize(size){
+		Call(raylib, "SetObjectProperty", this .rectangle, "Size", size.ToNative());
+	}
+	
+	// Converts Native Rectangle to wrapper
+	// Accepts:
+	//		Native::Rectangle -> rect
+	// Returns:
+	//		Rectangle -> nrect
+	static function FromNative(rect){
+		var nrect = Rectangle(Vector2(0, 0), Vector2(0, 0));
+		nrect.rectangle = rect;
+		return nrect;
+	}
+	
+	// Converts wrapper to Native Rectangle
+	// Returns:
+	//		Native::Rectangle -> rect
+	function ToNative(){
+		return this .rectangle;
+	}
+}
+
+// Setup window configuration flags (view FLAGS)
+// Accepts:
+//		Native::ConfigFlags -> flags
+function SetConfigFlags(flags){
+	Call(raylib, "SetConfigFlags", flags);
+}
+
+// Set a custom key to exit program (default is ESC)
+// Accepts:
+//		Native::KeyboardKey -> key
+function SetExitKey(key){
+	Call(raylib, "SetExitKey", key);
+}
+
+// Set master volume (listener)
+// Accepts:
+//		double -> value
+function SetMasterVolume(value){
+	Call(raylib, "SetMasterVolume", value);
+}
+
+// Set mouse position XY
+// Accepts:
+//		double -> x
+//		double -> y
+function SetMousePosition(x, y){
+	Call(raylib, "SetMousePosition", x, y);
+}
+
+// Set Target FPS (maximum)
+function SetTargetFPS(value){
+	Call(raylib, "SetTargetFPS", value);
+}
+
+// Set icon for window (single image, RGBA 32bit, only PLATFORM_DESKTOP)
+// Accepts:
+//		Native::Image -> icon
+function SetWindowIcon(icon){
+	Call(raylib, "SetWindowIcon", icon);
+}
+
+// Set window configuration
+// Accepts:
+//		Native::ConfigFlags -> flags
+// Returns:
+// 		bool -> result
+function SetWindowState(flags){
+	return Call(raylib, "SetWindowState", flags);
+}
+
+// Set window dimensions
+// Accepts:
+//		double -> width
+//		double -> height
+function SetWindowSize(width, height){
+	Call(raylib, "SetWindowSize", width, height);
+}
+
+// Set title for window (only PLATFORM_DESKTOP)
+// Accepts:
+//		string -> title
+function SetWindowTitle(title){
+	Call(raylib, "SetWindowTitle", title);
+}
+
+// Native Sound Wrapper
+// Sound source type
+class Sound {
+	// Native Sound
+	private var sound;
+		
+	// Sound Constructor
+	// Accepts:
+	//		string -> file
+	function init(file){
+		this .sound = Call(raylib, "LoadSound", file);
+	}
+	
+	// Play a sound (this only)
+	function Play(){
+		Call(raylib, "PlaySound", this .sound);
+	}
+	
+	// Unload sound (this only)
+	function Unload(){
+		Call(raylib, "UnloadSound", this .sound);
+	}
+}
+
+// Native Texture2D Wrapper
+// Texture2D Type
+class Texture2D{
+	// Native Texture2D
+	// NOTE: Data stored in GPU memory
+	private var texture;
+	
+	// Texture2D Constructor
+	// Accepts:
+	//		string -> file
+	function init(file){
+		this .texture = Call(raylib, "LoadTexture", file);
+	}
+	
+	// Get Texture base width
+	// Returns:
+	//		double -> width;
+	function GetWidth(){
+		return number(Call(raylib, "GetObjectProperty", this.texture, "Width"));
+	}
+	
+	// Get Texture base height
+	// Returns:
+	//		double -> height;
+	function GetHeight(){
+		return number(Call(raylib, "GetObjectProperty", this.texture, "Height"));
+	}
+	
+	// Draw a Texture2D (this only)
+	// Accepts:
+	//		Vector2       -> position
+	//		Native::Color -> tint
+	function Draw(position, tint){
+		Call(raylib, "DrawTexture", this .texture, position.X, position.Y, tint);
+	}
+	
+	
+	// Draw a Texture2D with extended parameters (this only)
+	// Accepts:
+	//		Vector2       -> position
+	//		double        -> rotation
+	//		double        -> scale
+	//		Native::Color -> tint
+	function DrawEx(position, rotation, scale, tint){
+		Call(raylib, "DrawTextureEx", position.ToNative(), rotation, scale, tint);
+	}
+	
+	// Draw a part of a texture defined by a rectangle with 'pro' parameters
+	// Accepts:
+	//		Rectangle     -> source
+	//		Rectangle     -> dest
+	//		Vector2       -> origin
+	//		double        -> rotation
+	//		Native::Color -> tint
+	function DrawPro(source, dest, origin, rotation, tint){
+		Call(raylib, "DrawTexturePro", this.texture, source.ToNative(), dest.ToNative(), origin.ToNative(), rotation, tint);
+	}
+	
+	// Draw a part of a texture defined by a rectangle (this only)
+	// Accepts:
+	// 		Rectangle     -> source
+	//		Vector2       -> position
+	//		Native::Color -> tint
+	function DrawRec(source, position, tint){
+		Call(raylib, "DrawTextureRec", this.texture, source.ToNative(), position.ToNative(), tint);
+	}
+	
+	// Initializes render texture for drawing (this only)
+	function Begin(){
+		Call(raylib, "BeginTextureMode", this.texture);
+	}
+	
+	// Ends drawing to render texture
+	function End(){
+		Call(raylib, "EndTextureMode");
+	}
+	
+	// Load image from GPU texture data
+	// Returns:
+	//		Native::Image -> image 
+	function AsImage(){
+		return Call(raylib, "LoadImageFromTexture", this .texture);
+	}
+	
+	// Unload texture from GPU memory (VRAM)
+	function Unload(){
+		Call(raylib, "UnloadTexture", this.texture);
+	}
+}
+
+// Unload Font from GPU memory (VRAM)
+// Accepts:
+//		Native::Font -> font
+function UnloadFont(font){
+	Call(raylib, "UnloadFont", font);
+}
+
+// Native Vector2 Wrapper
+class Vector2 {
+	// double
+	var X = 0 ;
+	// double
+	var Y = 0 ;	
+	
+	static var ZERO;
+	static var UP;
+	static var DOWN;
+	static var LEFT;
+	static var RIGHT;
+	
+	static function _init_(){
+		this.ZERO  = Vector2(0, 0);
+		this.UP    = Vector2(0, 1);
+		this.DOWN  = Vector2(0, -1);
+		this.LEFT  = Vector2(-1, 0);
+		this.RIGHT = Vector2(1, 0);
+	}
+	
+	// Native Vector2 Constructor
+	// Accepts:
+	//		double -> x
+	//		double -> y
+	function init(x, y){
+		this .X = x;
+		this .Y = y;
+	}
+	
+	// Checks if this vector's magnitude is equal to another
+	// Accepts:
+	//		Vector2 -> vector
+	// Returns:
+	//		bool -> isEqual	
+	function Equal(vector){
+		return this.X == vector.X and this.Y == vector.Y;
+	}
+	
+	// Converts native Vector2 to wrapper
+	// Accepts:
+	// 		Native::Vector2 -> vector
+	// Returns:
+	//		Vector2 -> vector
+	static function FromNative(vector){
+		var x = Call(raylib, "GetVector2X", vector);
+		var y = Call(raylib, "GetVector2Y", vector);
+		return Vector2(x, y);
+	}
+	
+	// Converts wrapper to native Vector2
+	// Returns:
+	//		Native::Vector2 -> vector
+	function ToNative(){
+		return Call(raylib, "CreateVector2", this .X, this .Y);
+	}
+	
+	function toString() return $"X: {this.X}, Y: {this.Y}";
+}
+
+// Check if KEY_ESCAPE pressed or Close icon pressed
+// Returns:
+//		bool -> result
+function WindowShouldClose(){
+	return Call(raylib, "WindowShouldClose");
+}
