@@ -36,7 +36,7 @@ function Clear(){
 class List{
 	var VALUES;
 	
-	function init(){
+	function List(){
 		this.VALUES = _1();
 	}
 
@@ -141,64 +141,36 @@ class List{
 
 
 // Neuku Dictionary [Key, Value]
-class Dictionary{
-	var KEYS;
-	var VALUES;
+class Dictionary {
+	private var keys = [];
+	private var values = [];
 
-	function init(){
-		this.KEYS = List();
-		this.VALUES = List();
+	function @Index(key){
+		if (!this.ContainsKey(key)) return nil;
+		return this.values[indexOf(this.keys, key)];
 	}
 
-	// Assigns given value to the given key
-	function Set(key, value){
-		if (this.KEYS.Contains(key)){
-			var idx = this.KEYS.IndexOf(key);
-			this.VALUES.RemoveAt(idx);
-			this.VALUES.InsertAt(idx, value);
+	function @IndexAssign(key, value){
+		if (!this.ContainsKey(key)) {
+			append(this.keys, key);
+			append(this.values, value);
 		}
 		else {
-			this.KEYS.Add(key);
-			this.VALUES.Add(value);
-		}
-
-		return this;
-	}
-
-	// Gets the value assign to the given key
-	function Get(key){
-		if (this.KEYS.Contains(key)){
-			var idx = this.KEYS.IndexOf(key);
-			return this.VALUES.GetAt(idx);
-		}
-		else {
-			return nil;
+			this.values[indexOf(this.keys, key)] = value;
 		}
 	}
 
-	// Removes the given key and its value
-	function Remove(key){
-		if(this.KEYS.Contains(key)){
-			var idx = this.KEYS.IndexOf(key);
-			this.KEYS.RemoveAt(idx);
-			this.VALUES.RemoveAt(idx);
-		}
-
-		return this;
-	}
-
-	// Return the number of entires present in the Dictionary
-	function Count(){
-		return this.KEYS.Count();
+	function ContainsKey(key){
+		return indexOf(this.keys, key) != -1;
 	}
 }
 
 // Neuku String
 class String {
-	var VALUE;
-	var CORE;
+	private var VALUE;
+	private var CORE;
 	
-	function init(init_value){
+	function String(init_value){
 		if(init_value == nil){
 			this.VALUE = "";
 		}
@@ -327,11 +299,11 @@ class String {
 
 // Neuku FileSystem
 class FileSystem{
-	static var FILE;
-	static var DIRECTORY;
-	static var PATH;
+	private static var FILE;
+	private static var DIRECTORY;
+	private static var PATH;
 
-	static function _init_(){
+	static function @FileSystem(){
 		var fs = _3();
 		FileSystem.FILE = Call(fs, "GetFileClass");
 		FileSystem.DIRECTORY = Call(fs, "GetDirectoryClass");
@@ -396,9 +368,9 @@ class Math {
 	static var Tau = 6.2831853071795862;
 	static var E = 2.7182818284590451;
 
-	static var CORE;
+	private static var CORE;
 
-	static function _init_(){
+	static function @Math(){
 		Math.CORE = Call(_4(), "GetMathType");
 	}
 
@@ -562,7 +534,7 @@ class Math {
 
 
 class SystemException : Exception {
-	function init(message, innerException){
+	function SystemException(message, innerException){
 		this.message = message;
 		this.innerException = innerException;
 	}
