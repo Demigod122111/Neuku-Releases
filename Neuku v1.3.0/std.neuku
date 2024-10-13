@@ -1,0 +1,546 @@
+﻿
+// Console
+var CONSOLE = Call(_5(), "GetConsoleType");
+
+// Awaits Key to be pressed in input stream
+function ReadKey(){
+	CallIndex(CONSOLE, "ReadKey", 0);	
+}
+
+// Writes object to the output stream
+function Print(obj){
+	CallIndex(CONSOLE, "Write", 15, obj);
+}
+
+// Writes object to a line in the output stream
+function PrintLine(obj){
+	CallIndex(CONSOLE, "WriteLine", 12, obj);
+}
+
+// Read character from the next line in the input stream
+function Read(){
+	return CallIndex(CONSOLE, "Read", 0);
+}
+
+// Read string from the next line in the input stream
+function ReadLine(){
+	return CallIndex(CONSOLE, "ReadLine", 0);
+}
+
+// Clears Console
+function Clear(){
+	return CallIndex(CONSOLE, "Clear", 0);
+}
+
+// Represents a Neuku List
+class List{
+	var VALUES;
+	
+	function List(){
+		this.VALUES = _1();
+	}
+
+	// Returns the item found at the given index
+	function GetAt(index){
+		return Call(this.VALUES, "GetItemAt", index);
+	}
+    
+	// Appends an item to the List
+	function Add(item){
+		Call(this.VALUES, "AddItem", item);
+		return this;
+	}
+
+	// Push an item to the List at the given integral index
+	function InsertAt(index, item){
+		Call(this.VALUES, "AddItemAt", item, index);
+		return this;
+	}
+
+	// Removes an item from the List
+	function Remove(item){
+		Call(this.VALUES, "RemoveItem", item);
+		return this;
+	}
+
+	// Removes an item found at the given integral index from the List
+	function RemoveAt(index){
+		Call(this.VALUES, "RemoveItemAt", index);
+		return this;
+	}
+	
+	// Set the item at the given index
+	function SetAt(index, value){
+		this.RemoveAt(index);
+		this.InsertAt(index, value);
+		return this;
+	}
+
+	// Returns the number of items present in the List
+	function Count(){
+		return Call(this.VALUES, "GetCount");
+	}
+
+	// Removes all items from the List
+	function Clear(){
+		return Call(this.VALUES, "ClearItems");
+	}
+
+	// Checks if item exists in List
+	function Contains(item){
+		return Call(this.VALUES, "ContainsItem", item);
+	}
+
+	// Returns the index of the given item in the List
+	function IndexOf(item){
+		return Call(this.VALUES, "IndexOfItem", item);
+	}
+	
+	function Min(){
+		var cmin = nil;
+		
+		for (var i = 0; i < this.Count(); i++){
+			if (cmin == nil){
+				try {
+					cmin = number(this.GetAt(i));
+				}
+				catch {}
+			}
+			else {
+				try {
+					cmin = Math().Min(cmin, number(this.GetAt(i)));
+				}
+				catch {}
+			}
+		}
+		
+		return cmin;
+	}
+	
+	function Max(){
+		var cmax = nil;
+		
+		for (var i = 0; i < this.Count(); i++){
+			if (cmax == nil){
+				try {
+					cmax = number(this.GetAt(i));
+				}
+				catch {}
+			}
+			else {
+				try {
+					cmax = Math().Max(cmax, number(this.GetAt(i)));
+				}
+				catch {}
+			}
+		}
+		
+		return cmax;
+	}
+}
+
+
+// Neuku Dictionary [Key, Value]
+class Dictionary {
+	private var keys = [];
+	private var values = [];
+
+	function @Index(key){
+		if (!this.ContainsKey(key)) return nil;
+		return this.values[indexOf(this.keys, key)];
+	}
+
+	function @IndexAssign(key, value){
+		if (!this.ContainsKey(key)) {
+			append(this.keys, key);
+			append(this.values, value);
+		}
+		else {
+			this.values[indexOf(this.keys, key)] = value;
+		}
+	}
+
+	function ContainsKey(key){
+		return indexOf(this.keys, key) != -1;
+	}
+}
+
+// Neuku String
+class String {
+	private var VALUE;
+	private var CORE;
+	
+	function String(init_value){
+		if(init_value == nil){
+			this.VALUE = "";
+		}
+		else{
+			this.VALUE = init_value;
+		}
+
+		this.CORE = _2();
+	}
+
+	// Removes all leading and trailing white-spaces from String
+	function Trim(){
+		this.VALUE = Call(this.CORE, "Trim", this.VALUE);
+		return this;
+	}
+
+	// Removes all leading white-spaces from String
+	function TrimStart(){
+		this.VALUE = Call(this.CORE, "TrimStart", this.VALUE);
+		return this;
+	}
+
+	// Removes all trailing white-spaces from String
+	function TrimEnd(){
+		this.VALUE = Call(this.CORE, "TrimEnd", this.VALUE);
+		return this;
+	}
+
+	// Returns a string whose textual value is the same as this string, but whose binary respresentation is in Unicode normalization from C
+	function Normalize(){
+		return Call(this.CORE, "Normalize", this.VALUE);
+	}
+
+	// Returns a copy of this String converted to lowercase using the casing rules of the invariant culture
+	function ToLowerInvariant(){
+		return Call(this.CORE, "ToLowerInvariant", this.VALUE);
+	}
+
+	// Returns a copy of this String converted to uppercase using the casing rules of the invariant culture
+	function ToUpperInvariant(){
+		return Call(this.CORE, "ToUpperInvariant", this.VALUE);
+	}
+
+	// Returns String of which all occurrences of the given string (old) are replaced by another (new)
+	function Replace(old, new){
+		this.value = Call(this.CORE, "Replace", this.VALUE, old, new);
+		return this;
+	}
+
+	// Returns String converted to lowercase
+	function ToLower(){
+		this.VALUE = Call(this.CORE, "ToLower", this.VALUE);
+		return this;
+	}
+
+	// Returns String converted to uppercase
+	function ToUpper(){
+		this.VALUE = Call(this.CORE, "ToUpper", this.VALUE);
+		return this;
+	}
+
+	// Determines whether the end of this String matches the given string (suffix)
+	function EndsWith(suffix){
+		return Call(this.CORE, "EndsWith", this.VALUE, suffix);
+	}
+
+	// Returns a reference to String
+	function Clone(){
+		return Call(this.CORE, "Clone", this.VALUE);
+	}
+
+	// Copies the characters of String to a List
+	function ToCharList(){
+		return List(Call(this.CORE, "ToCharList", this.VALUE));
+	}
+
+	// Concatenates the elements of a List, using the given separator between each element
+	static function Join(objs, separator){
+		if ( objs == nil ){
+			throw SystemException("Cannot join object of nil value", nil );
+		}
+		
+		return Call(_2(), "Join", objs.VALUES, separator);
+	}
+
+	// Inserts given substring into String at the given index
+	function InsertAt(index, substring){
+		var ss = "" + substring;
+		var chs = this.ToCharList();
+		chs.InsertAt(index, ss);
+		var res = this.Join(chs, "");
+		this.VALUE = res;
+		return this;
+	}
+
+	// Returns the number of characters in the String
+	function Length(){
+		return this.ToCharList().Count();
+	}
+
+	// Returns the character present at the given index
+	function CharAt(index){
+		return this.ToCharList().GetAt(index);
+	}
+	
+	// Set the character present at the given index
+	function SetCharAt(index, value){
+		this.VALUE = this.Join(this.ToCharList().SetAt(index, value), "");
+		return this;
+	}
+
+	function toString(){
+		this.VALUE = Call(this.CORE, "VToString", this.VALUE);
+		return this.VALUE;
+	}
+	
+	function equals(obj){
+		if (obj is String){
+			return this.VALUE == obj.VALUE;
+		}
+
+		return this.VALUE == obj;
+	}
+
+}
+
+// Neuku FileSystem
+class FileSystem{
+	private static var FILE;
+	private static var DIRECTORY;
+	private static var PATH;
+
+	static function @FileSystem(){
+		var fs = _3();
+		FileSystem.FILE = Call(fs, "GetFileClass");
+		FileSystem.DIRECTORY = Call(fs, "GetDirectoryClass");
+		FileSystem.PATH = Call(fs, "GetPathClass");
+	}
+
+
+	// Writes the given text to the file found at given path
+	static function WriteText(path, text){
+		CallIndex(FileSystem.FILE, "WriteAllText", 0, path, text);
+	}
+	
+	// Returns the text contained in the file found at given path
+	static function ReadText(path){
+		return CallIndex(FileSystem.FILE, "ReadAllText", 0, path);
+	}
+
+	// Deletes the file found at given path
+	static function DeleteFile(path){
+		CallIndex(FileSystem.FILE, "Delete", 0, path);
+	}
+
+	// Determines whether the given path is a file
+	static function FileExists(path){
+		return CallIndex(FileSystem.FILE, "Exists", 0, path);
+	}
+
+	// Deletes the folder found at the given path
+	static function DeleteDirectory(path){
+		CallIndex(FileSystem.DIRECTORY, "Delete", 0, path);
+	}
+
+	// Determines whether the given path is a folder
+	static function DirectoryExists(path){
+		return CallIndex(FileSystem.DIRECTORY, "Exists", 0, path);
+	}
+
+	// Creates a folder at the given path
+	static function CreateDirectory(path){
+		CallIndex(FileSystem.DIRECTORY, "CreateDirectory", 0, path);
+	}
+
+	// Returns a List containing the files in folder found at the given path
+	static function GetFiles(path){
+		return CallIndex(FileSystem.DIRECTORY, "GetFiles", 0, path);
+	}
+
+	// Returns the full path of the give path
+	static function GetFullPath(path){
+		return CallIndex(FileSystem.PATH, "GetFullPath", 0, path);
+	}
+
+	// Returns the combination of the given paths
+	static function CombinePaths(path1, path2){
+		return CallIndex(FileSystem.PATH, "Combine", 0, path1, path2);
+	}
+}
+
+// Neuku Math
+class Math {
+	static var PI = 3.1415926535897931;
+	static var Tau = 6.2831853071795862;
+	static var E = 2.7182818284590451;
+
+	private static var CORE;
+
+	static function @Math(){
+		Math.CORE = Call(_4(), "GetMathType");
+	}
+
+	// Returns the absolute value of a number
+	static function Abs(value){
+		return CallIndex(Math.CORE, "Abs", 6, value);
+	}
+
+	// Returns the value of a number to the nearest integral value
+	static function Round(value){
+		return CallIndex(Math.CORE, "Round", 4, value);
+	}
+	
+	
+	// NOTE: All trigonometric functions are in radians, The angle, d, must be in radians. Multiply by Math.PI/180 to convert degrees to radians.
+	
+	// Returns An angle, θ, measured in radians, such that 0 ≤ θ ≤ π.
+	//
+	// -or-	
+	//
+	// NaN if d < -1 or d > 1 or d equals NaN.
+	static function Acos(d){
+		return CallIndex(Math.CORE, "Acos", 0, d);
+	}
+	
+	// Returns An angle, θ, measured in radians, such that 0 ≤ θ ≤ ∞.
+	//
+	// -or-	
+	//
+	// NaN if d < 1 or d equals NaN.
+	static function Acosh(d){
+		return CallIndex(Math.CORE, "Acos", 0, d);
+	}
+	
+	// Returns The cosine of d. If d is equal to NaN, NegativeInfinity, or PositiveInfinity, this method returns NaN.
+	static function Cos(d){
+		return CallIndex(Math.CORE, "Cos", 0, d);
+	}
+	
+	// Returns The hyperbolic cosine of value. If value is equal to NegativeInfinity or PositiveInfinity, PositiveInfinity is returned. If value is equal to NaN, NaN is returned.
+	static function Cosh(d){
+		return CallIndex(Math.CORE, "Cosh", 0, d);
+	}
+	
+	// Returns An angle, θ, measured in radians, such that 0 ≤ θ ≤ π.
+	//
+	// -or-	
+	//
+	// NaN if d < -1 or d > 1 or d equals NaN.
+	static function Asin(d){
+		return CallIndex(Math.CORE, "Asin", 0, d);
+	}
+	
+	// Returns An angle, θ, measured in radians.
+	//
+	// -or-	
+	//
+	// NaN if d equals NaN.
+	static function Asinh(d){
+		return CallIndex(Math.CORE, "Asinh", 0, d);
+	}
+	
+	// Returns The sine of a. If a is equal to NaN, NegativeInfinity, or PositiveInfinity, this method returns NaN.
+	static function Sin(d){
+		return CallIndex(Math.CORE, "Sin", 0, d);
+	}
+	
+	// Returns The hyperbolic sine of value. If value is equal to NegativeInfinity, PositiveInfinity, or NaN, this method returns a Double equal to value.
+	static function Sinh(d){
+		return CallIndex(Math.CORE, "Sinh", 0, d);
+	}
+	
+	// Returns An angle, θ, measured in radians, such that -π/2 ≤ θ ≤ π/2.
+	//
+	// -or-	
+	//
+	// NaN if d equals NaN, -π/2 rounded to double precision (-1.5707963267949) if d equals NegativeInfinity, or π/2 rounded to double precision (1.5707963267949) if d equals PositiveInfinity.
+	static function Atan(d){
+		return CallIndex(Math.CORE, "Atan", 0, d);
+	}
+	
+	// Returns An angle, θ, measured in radians, such that tan(θ) = y / x, where (x, y) is a point in the Cartesian plane. Observe the following:
+	//
+	//	For (x, y) in quadrant 1, 0 < θ < π/2.
+	//
+	//	For (x, y) in quadrant 2, π/2 < θ ≤ π.
+	//
+	//	For (x, y) in quadrant 3, -π ≤ θ < -π/2.
+	//
+	//	For (x, y) in quadrant 4, -π/2 < θ < 0.
+	//
+	//	For points on the boundaries of the quadrants, the return value is the following:
+	//
+	//	If y is 0 and x is not negative, θ = 0.
+	//
+	//	If y is 0 and x is negative, θ = π.
+	//
+	//	If y is positive and x is 0, θ = π/2.
+	//
+	//	If y is negative and x is 0, θ = -π/2.
+	//
+	//	If y is 0 and x is 0, θ = 0.
+	//
+	// If x or y is NaN, or if x and y are either PositiveInfinity or NegativeInfinity, the method returns NaN.
+	static function Atan2(y, x){
+		return CallIndex(Math.CORE, "Atan2", 0, y, x);
+	}
+
+	// Returns An angle, θ, measured in radians, such that -∞ < θ < -1, or 1 < θ < ∞.
+	//
+	// -or-	
+	//
+	// NaN if d < -1 or d > 1 or d equals NaN.
+	static function Atanh(d){
+		return CallIndex(Math.CORE, "Atanh", 0, d);
+	}
+	
+	// Returns The tangent of a. If a is equal to NaN, NegativeInfinity, or PositiveInfinity, this method returns NaN.
+	static function Tan(d){
+		return CallIndex(Math.CORE, "Tan", 0, d);
+	}
+	
+	// Returns The hyperbolic tangent of value. If value is equal to NegativeInfinity, this method returns -1. If value is equal to PositiveInfinity, this method returns 1. If value is equal to NaN, this method returns NaN.
+	static function Tanh(d){
+		return CallIndex(Math.CORE, "Tanh", 0, d);
+	}
+	
+	// One of the values in the following table.
+	//
+	//	d parameter	            |               Return value
+	// Zero or positive	        |       The positive square root of d.
+	// Negative	                |                  NaN	
+	// Equals NaN	            |                  NaN
+	// Equals PositiveInfinity	|             PositiveInfinity
+
+	static function Tanh(d){
+		return CallIndex(Math.CORE, "Tanh", 0, d);
+	}
+	
+	// Returns the larger of two double-precision floating-point numbers.
+	static function Max(a, b){
+		return CallIndex(Math.CORE, "Max", 2, a, b);
+	}
+	
+	// Returns the smaller of two double-precision floating-point numbers.
+	static function Min(a, b){
+		return CallIndex(Math.CORE, "Min", 2, a, b);
+	}
+	
+	
+	// Root of number
+	static function Sqrt(d){
+		return CallIndex(Math.CORE, "Sqrt", 0, d);
+	}
+	
+	// Returns number to the given power
+	static function Pow(d, pow){
+		return CallIndex(Math.CORE, "Pow", 0, d, pow);
+	}
+}
+
+
+class SystemException : Exception {
+	function SystemException(message, innerException){
+		this.message = message;
+		this.innerException = innerException;
+	}
+}
+
+function Sleep(time){
+	var start = Clock();
+	while (Clock() - start < time){}
+}
