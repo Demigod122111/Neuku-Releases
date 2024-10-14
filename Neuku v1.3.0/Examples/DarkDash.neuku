@@ -1,0 +1,211 @@
+import "https://raw.githubusercontent.com/Demigod122111/Neuku-Releases/refs/heads/main/Neuku%20v1.3.0/std.neuku" as std;
+import "https://raw.githubusercontent.com/Demigod122111/Neuku-Releases/refs/heads/main/Neuku%20v1.3.0/raylib.neuku" as rlb;
+
+
+// Init
+var SCREEN_WIDTH = 800 ;
+var SCREEN_HEIGHT = 450 ;
+
+rlb.SetConfigFlags(rlb.ConfigFlags("Msaa4xHint")); 
+rlb.InitWindow(SCREEN_WIDTH , SCREEN_HEIGHT, ":Dark Dash:");
+rlb.SetWindowIcon(rlb.Texture2D("./assets/gameboy.png").AsImage());
+rlb.SetTargetFPS( 60 );
+
+
+var pipes = std.List();
+
+var playerHeight = 30 ;
+var playerY = SCREEN_HEIGHT * 0.5 - playerHeight / 2 ;
+
+var gravity = 9.8 ;
+
+var longestSurvivalTime = 0 ;
+var survivalTime = 0 ;
+
+
+var saveFile = "./darkdash.save";
+
+// Settings
+var initGameSpeed = 300 ;
+var gameSpeed = initGameSpeed;
+var deltaTime = 0.2 ;
+var initMaxPipes = 4 ;
+var maxPipes = initMaxPipes;
+
+
+// GameStates
+var MENU = 0 ;
+var GAME = 1 ;
+var PAUSE = 2 ;
+var OVER = 3 ;
+
+var GAMESTATE = MENU;
+
+while (!rlb.WindowShouldClose()){
+	
+	// Update
+	switch (GAMESTATE) {
+		case MENU: 
+		{
+			if (rlb.IsKeyPressed(rlb.KeyboardKey("Enter"))){
+				pipes.Clear();
+				playerY = SCREEN_HEIGHT * 0.5 - playerHeight / 2 ;
+				gravity = 9.8 ;
+				survivalTime = 0 ;
+				gameSpeed = initGameSpeed;
+				maxPipes = initMaxPipes;
+				GAMESTATE = GAME;
+			}
+		}
+		case GAME:
+		{
+			if (pipes.Count() < std.Math.Round(maxPipes) and rlb.GetRandomValue( 0 , 10 ) > 7 ){
+				var pipeHeight = rlb.GetRandomValue( SCREEN_HEIGHT * 0.2 , SCREEN_HEIGHT * 0.4 ) ;
+				pipes.Add(rlb.Rectangle( rlb.Vector2( SCREEN_WIDTH , ternary(rlb.GetRandomValue( 0 , 10 ) > 5 , 0 , SCREEN_HEIGHT -  pipeHeight) ), rlb.Vector2( 15 , pipeHeight)));
+			}
+			
+			var removals = std.List();
+			for ( var i = 0 ; i < pipes.Count(); i++){
+				var rect = pipes.GetAt(i);
+				var pos = rect.GetPosition();
+				var size = rect.GetSize();
+				pos.X -= gameSpeed * deltaTime;
+				rect.SetPosition(pos);
+				
+				if (pos.X + size.X < 0 ){
+					removals.Add(rect);
+				}
+			}
+			
+			for ( var i = 0 ; i < removals.Count(); i++){
+				pipes.Remove(removals.GetAt(i));
+			}
+			
+			if (rlb.IsKeyDown(rlb.KeyboardKey("Space"))){
+				gravity = -9.8 ;
+			}
+			
+			playerY += gravity * deltaTime * 25 ;
+			
+			if (playerY < 0 ) {
+				playerY = 0 ;
+			}
+			
+			if (playerY + playerHeight > SCREEN_HEIGHT){
+				playerY = SCREEN_HEIGHT - playerHeight;
+			}
+			
+			gravity = std.Math.Max( 9.8 , gravity + 0.1 );
+			
+			deltaTime = rlb.GetFrameTime();
+			gameSpeed += deltaTime * 10 ;
+			maxPipes += deltaTime;
+			survivalTime += deltaTime;
+			if (survivalTime > longestSurvivalTime){
+				longestSurvivalTime = survivalTime;
+			}
+						
+			if (rlb.IsKeyPressed(rlb.KeyboardKey("P"))){
+				GAMESTATE = PAUSE;
+			}
+		}
+		case PAUSE: 
+		{
+			prevTime = Clock();
+			
+			if (rlb.IsKeyPressed(rlb.KeyboardKey("Enter"))){
+				GAMESTATE = MENU;
+			}
+			
+			if (rlb.IsKeyPressed(rlb.KeyboardKey("Space"))){
+				GAMESTATE = GAME;
+			}
+		}
+		case OVER: 
+		{
+			if (rlb.IsKeyPressed(rlb.KeyboardKey("Enter"))){
+				GAMESTATE = MENU;
+			}
+		}
+	}
+	
+	// Drawing
+	rlb.BeginDrawing();
+	rlb.ClearBackground(rlb.ColorFromName("Black"));
+	
+	switch (GAMESTATE) {
+		case MENU:
+		{
+			var title = "Dark Dash";
+			var titleFontSize = 96 ;
+			rlb.DrawText(title, SCREEN_WIDTH / 2 - rlb.MeasureText(title, titleFontSize) / 2 , SCREEN_HEIGHT * 0.25 , titleFontSize, rlb.ColorFromRGB( 20 , 20 , 20 ));
+			
+			if (std.FileSystem.FileExists(saveFile)){
+				longestSurvivalTime = number(std.FileSystem.ReadText(saveFile));
+			}
+			else {
+				longestSurvivalTime = 0 ;
+			}
+			
+			var score = "Longest Time Survived: " + std.Math.Round(longestSurvivalTime) + "s";
+			var scoreFontSize = 48 ;
+			rlb.DrawText(score, SCREEN_WIDTH / 2 - rlb.MeasureText(score, scoreFontSize) / 2 , SCREEN_HEIGHT * 0.5 , scoreFontSize, rlb.ColorFromRGB( 25 , 25 , 25 ));
+			
+			var prompt = "Game: Press 'Enter'";
+			var promptFontSize = 36 ;
+			rlb.DrawText(prompt, SCREEN_WIDTH / 2 - rlb.MeasureText(prompt, promptFontSize) / 2 , SCREEN_HEIGHT * 0.75 , promptFontSize, rlb.ColorFromRGB( 30 , 30 , 30 ));
+		}
+		case GAME:
+		{
+			var playerRect = rlb.Rectangle(rlb.Vector2( 10 , playerY), rlb.Vector2( playerHeight * 1.5  , playerHeight));
+			
+			for ( var i = 0 ; i < pipes.Count(); i++){
+				var rect = pipes.GetAt(i);
+				rlb.DrawRectangleRec(rect, rlb.ColorFromRGB( 15 , 15 , 15 ));
+				
+				if (rlb.CheckCollisionRecs(rect, playerRect)){
+					GAMESTATE = OVER;
+					std.FileSystem.WriteText(saveFile, string(longestSurvivalTime));
+				}
+			}
+			
+			rlb.DrawRectangleRec(playerRect, rlb.ColorFromRGB( 10 , 10 , 25 ));
+			
+			rlb.DrawText("Time Survived: " + std.Math.Round(survivalTime) + "s (" + std.Math.Round(longestSurvivalTime) + "s)", 10 , 36 , 24 , rlb.ColorFromName("Beige"));
+
+			rlb.DrawFPS( 10 , 10 );
+		}
+		case PAUSE:
+		{
+			var title = "Paused";
+			var titleFontSize = 96 ;
+			rlb.DrawText(title, SCREEN_WIDTH / 2 - rlb.MeasureText(title, titleFontSize) / 2 , SCREEN_HEIGHT * 0.25 , titleFontSize, rlb.ColorFromRGB( 20 , 20 , 20 ));
+			
+			var prompt = "MainMenu: Press 'Enter'";
+			var promptFontSize = 48 ;
+			rlb.DrawText(prompt, SCREEN_WIDTH / 2 - rlb.MeasureText(prompt, promptFontSize) / 2 , SCREEN_HEIGHT * 0.55 , promptFontSize, rlb.ColorFromRGB( 25 , 25 , 25 ));
+			
+			var prompt2 = "Resume: Press 'Space'";
+			var prompt2FontSize = 36 ;
+			rlb.DrawText(prompt2, SCREEN_WIDTH / 2 - rlb.MeasureText(prompt2, prompt2FontSize) / 2 , SCREEN_HEIGHT * 0.75 , prompt2FontSize, rlb.ColorFromRGB( 30 , 30 , 30 ));
+		}
+		case OVER:
+		{
+			var title = "Game Over";
+			var titleFontSize = 96 ;
+			rlb.DrawText(title, SCREEN_WIDTH / 2 - rlb.MeasureText(title, titleFontSize) / 2 , SCREEN_HEIGHT * 0.25 , titleFontSize, rlb.ColorFromRGB( 20 , 20 , 20 ));
+			
+			var score = "Time Survived: " + std.Math.Round(survivalTime) + "s";
+			var scoreFontSize = 48 ;
+			rlb.DrawText(score, SCREEN_WIDTH / 2 - rlb.MeasureText(score, scoreFontSize) / 2 , SCREEN_HEIGHT * 0.55 , scoreFontSize, rlb.ColorFromRGB( 25 , 25 , 25 ));
+			
+			var prompt = "MainMenu: Press 'Enter'";
+			var promptFontSize = 36 ;
+			rlb.DrawText(prompt, SCREEN_WIDTH / 2 - rlb.MeasureText(prompt, promptFontSize) / 2 , SCREEN_HEIGHT * 0.75 , promptFontSize, rlb.ColorFromRGB( 30 , 30 , 30 ));
+		}
+	}
+	
+	rlb.EndDrawing();
+}
+
+rlb.CloseWindow();

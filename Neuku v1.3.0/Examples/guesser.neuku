@@ -1,0 +1,31 @@
+import "https://raw.githubusercontent.com/Demigod122111/Neuku-Releases/refs/heads/main/Neuku%20v1.3.0/std.neuku" as std;
+
+var num = std.Math.Round(number(random() * 99) + 1);
+var guess = 0;
+var chances = 10;
+var attempts = 0;
+
+while (guess != num) {
+	if (chances < 1) break;
+	attempts++;
+	std.Print("Guess a number (1 - 100): ");
+	guess = number(std.ReadLine());
+
+	if (guess > num) {
+		print "Too High!";
+	}
+	else if (num > guess) {
+		print "Too Low!";
+	}
+	
+	chances--;
+	print $"{chances} chances left!";
+}
+
+if (chances > 0)
+print $"It is {num}! Congrats, you got it right in {attempts} attempts!";
+else
+print $"It was {num}! You failed!";
+
+print "\nPress any key to exit...";
+std.ReadKey();

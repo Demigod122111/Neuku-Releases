@@ -1,0 +1,163 @@
+import "https://raw.githubusercontent.com/Demigod122111/Neuku-Releases/refs/heads/main/Neuku%20v1.3.0/std.neuku" as std;
+import "https://raw.githubusercontent.com/Demigod122111/Neuku-Releases/refs/heads/main/Neuku%20v1.3.0/raylib.neuku" as raylib;
+
+print "Use AI?\n[1] - Yes\n[2] - No";
+var ai = std.ReadLine() == "1";
+
+var WINDOW_WIDTH = 800 ;
+var WINDOW_HEIGHT = 450 ;
+
+raylib.SetConfigFlags(raylib.ConfigFlags("Msaa4xHint"));
+raylib.InitWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Pong");
+raylib.SetWindowIcon(raylib.Texture2D("./assets/gameboy.png").AsImage());
+raylib.SetTargetFPS( 60 );
+
+
+// Players
+var paddle_height = WINDOW_HEIGHT * 0.2 ;
+var paddle_width = paddle_height * 0.2 ;
+var paddle_speed = 6 ;
+
+var paddle1_y = WINDOW_HEIGHT / 2 - paddle_height / 2;
+var paddle2_y = WINDOW_HEIGHT / 2 - paddle_height / 2;
+
+var player1_score = 0 ;
+var player2_score = 0 ;
+
+// Ball
+
+function RandomBallVelocity(){
+	return raylib.Vector2(ternary(raylib.GetRandomValue( 0 , 10 ) > 5 , 1 , -1), ternary(raylib.GetRandomValue( 0 , 10 ) > 5 , 1 , -1));
+}
+
+var ballSize = raylib.Vector2(22 , 22);
+var ballVelocity = RandomBallVelocity();
+var initBallPosition = raylib.Vector2(WINDOW_WIDTH / 2 - ballSize.X / 2 , WINDOW_HEIGHT / (2) - ballSize.Y / 2); 
+var ballPosition = raylib.Vector2(initBallPosition.X, initBallPosition.Y); 
+var initBallSpeed = 3;
+var ballSpeed = initBallSpeed;
+var deltaTime = 0;
+
+while (!raylib.WindowShouldClose())
+{
+	// Update
+	ballSpeed = std.Math.Min(ballSpeed, 20 );
+	paddle_speed = std.Math.Round(ballSpeed + 3 );
+	
+	deltaTime = raylib.GetFrameTime() * 50 ;
+	
+	parallel {
+		ballPosition.X += ballVelocity.X * ballSpeed * deltaTime;
+		ballPosition.Y += ballVelocity.Y * ballSpeed * deltaTime;
+		
+		if (ballPosition.Y <= 0  or ballPosition.Y + ballSize.Y >= WINDOW_HEIGHT){
+			ballVelocity.Y = -ballVelocity.Y;
+		}
+		
+		if (ballPosition.X < 0 ) {
+			player2_score++;
+			ballPosition = raylib.Vector2(initBallPosition.X, initBallPosition.Y);
+			initBallSpeed += 0.1 ;
+			ballSpeed = initBallSpeed;
+			ballVelocity = RandomBallVelocity();
+		}
+		
+		if (ballPosition.X + ballSize.X > WINDOW_WIDTH) {
+			player1_score++;
+			ballPosition = raylib.Vector2(initBallPosition.X, initBallPosition.Y);
+			initBallSpeed += 0.1 ;
+			ballSpeed = initBallSpeed;
+			ballVelocity = RandomBallVelocity();
+		}
+	}
+	
+	// Drawing
+	raylib.BeginDrawing();
+	raylib.ClearBackground(raylib.ColorFromRGB( 0 , 0 , 5 ));
+	
+	if (raylib.IsKeyDown(raylib.KeyboardKey("W")) or (ai and raylib.IsKeyDown(raylib.KeyboardKey("Up")))){
+		paddle1_y -= paddle_speed * deltaTime;
+	}
+	
+	if (raylib.IsKeyDown(raylib.KeyboardKey("S")) or (ai and raylib.IsKeyDown(raylib.KeyboardKey("Down")))){
+		paddle1_y += paddle_speed * deltaTime;
+	}
+	
+	if (paddle1_y < 0 ){
+		paddle1_y = 0 ;
+	}
+	
+	if (paddle1_y + paddle_height > WINDOW_HEIGHT){
+		paddle1_y = WINDOW_HEIGHT - paddle_height;
+	}
+	
+	if (!ai){
+		if (raylib.IsKeyDown(raylib.KeyboardKey("Up"))){
+			paddle2_y -= paddle_speed * deltaTime;
+		}
+		
+		if (raylib.IsKeyDown(raylib.KeyboardKey("Down"))){
+			paddle2_y += paddle_speed * deltaTime;
+		}
+	}
+	else {
+		parallel {
+			var offset = (raylib.GetRandomValue(9, 11) / 10);
+			var offset2 = (raylib.GetRandomValue(8, 12) / 10);
+			
+			if (!(ballPosition.Y > paddle2_y * offset and ballPosition.Y < paddle2_y + paddle_height * offset)){
+				if (ballPosition.Y < paddle2_y + paddle_height * ternary(ballPosition.X < WINDOW_WIDTH / 2 , 0.45 , 0.3 )){
+					paddle2_y -= paddle_speed * deltaTime * offset2 * ternary(ballPosition.X < WINDOW_WIDTH / 2 , 0.3 , 1 );
+				}
+				else if (ballPosition.Y > paddle2_y + paddle_height * ternary(ballPosition.X < WINDOW_WIDTH / 2 , 0.55 , 0.7 )){
+					paddle2_y += paddle_speed * deltaTime * offset2 * ternary(ballPosition.X < WINDOW_WIDTH / 2 , 0.3 , 1 );
+				}
+			}
+		}
+	}
+	
+	if (paddle2_y < 0 ){
+		paddle2_y = 0 ;
+	}
+	
+	if (paddle2_y + paddle_height > WINDOW_HEIGHT){
+		paddle2_y = WINDOW_HEIGHT - paddle_height;
+	}
+	
+	var paddle1_rect = raylib.Rectangle(raylib.Vector2( 10 , paddle1_y), raylib.Vector2(paddle_width, paddle_height));
+	var paddle2_rect = raylib.Rectangle(raylib.Vector2( WINDOW_WIDTH - paddle_width - 10 , paddle2_y), raylib.Vector2(paddle_width, paddle_height));
+	
+	
+	// Draw Middle Line
+	var middleLine_width = 5 ;
+	var middleLine_x = WINDOW_WIDTH / 2 - middleLine_width / 2 ;
+	var middleLine_rect = raylib.Rectangle(raylib.Vector2(middleLine_x, 0 ), raylib.Vector2(middleLine_width, WINDOW_HEIGHT));
+	raylib.DrawRectangleRec(middleLine_rect, raylib.ColorFromRGB( 10 , 10 , 10 ));
+	
+	// Draw Ball Speed
+	var bsSize = 21 ;
+	raylib.DrawText("Ball Speed: " + ballSpeed, 10 , 5 , bsSize, raylib.ColorFromRGB( 30 , 30 , 30 ));
+	
+	// Draw Scores
+	var scoreSize = 38 ;
+	raylib.DrawText(string(player1_score), middleLine_x - raylib.MeasureText(string(player1_score), scoreSize) - middleLine_width, 5 , scoreSize, raylib.ColorFromRGB( 20 , 20 , 40 ));
+	raylib.DrawText(string(player2_score), middleLine_x + 2 * middleLine_width, 5 , scoreSize, raylib.ColorFromRGB( 40 , 20 , 20 ));
+		
+	// Draw Ball
+	var ballRect = raylib.Rectangle(ballPosition, ballSize);
+	raylib.DrawRectangleRec(ballRect, raylib.ColorFromName("White"));
+	
+	if (raylib.CheckCollisionRecs(ballRect, paddle1_rect) or raylib.CheckCollisionRecs(ballRect, paddle2_rect)){
+		ballVelocity.X = -ballVelocity.X;
+		ballSpeed += 0.1 ;
+	}
+	
+	// Draw Paddles
+	raylib.DrawRectangleRec(paddle1_rect, raylib.ColorFromName("Teal"));
+	raylib.DrawRectangleRec(paddle2_rect, raylib.ColorFromName("Crimson"));
+	
+	raylib.EndDrawing();
+}
+
+
+raylib.CloseWindow();

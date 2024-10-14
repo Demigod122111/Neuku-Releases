@@ -1,0 +1,20 @@
+import "https://raw.githubusercontent.com/Demigod122111/Neuku-Releases/refs/heads/main/Neuku%20v1.3.0/std.neuku" as std;
+import "https://raw.githubusercontent.com/Demigod122111/Neuku-Releases/refs/heads/main/Neuku%20v1.3.0/raylib.neuku" as raylib;
+
+var WINDOW_SIZE = [800, 600];
+var WINDOW_TITLE = "Raylib Template";
+
+raylib.SetConfigFlags(raylib.ConfigFlags("ResizableWindow"));
+raylib.InitWindow(WINDOW_SIZE[0], WINDOW_SIZE[1], WINDOW_TITLE);
+
+
+while (!raylib.WindowShouldClose()){
+	
+	raylib.BeginDrawing();
+	raylib.ClearBackground(raylib.ColorFromRGB(0, 0, 15));
+	raylib.DrawFPS(10, 10);
+
+	raylib.EndDrawing();
+}
+
+raylib.CloseWindow();
