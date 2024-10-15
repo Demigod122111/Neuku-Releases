@@ -1,0 +1,44 @@
+function CreateServer(){
+	return Call(DLL(@"https://github.com/Demigod122111/Neuku-Releases/raw/refs/heads/main/Neuku%20v1.3.0/Neuku%20Web.dll", "Core"), "Create");
+}
+
+function RegisterPrefix(core, prefix){
+	Call(core, "Register", prefix);
+}
+
+function Start(core){
+	Call(core, "Start");
+}
+
+function SetPage(core, name, html, css, js){
+	Call(core, "SetPage", name, html, css, js);
+}
+
+function SetIndexPage(core, name){
+	Call(core, "SetIndexPage", name);
+}
+
+function UnsetPage(core, name){
+	Call(core, "UnsetPage", name);
+}
+
+function Navigate(core, name){
+	Call(core, "Navigate", name);
+}
+
+function PollEvents(core){
+	Call(core, "PollEvents");
+}
+
+function HasSocketMessage(core) {
+	return Call(core, "HasSocketMessage");
+}
+
+function GetSocketMessage(core)
+{
+    return Call(core, "GetSocketMessage");
+}
+
+function SendSocketMessage(core, msg) {
+	Call(core, "SendSocketMessage", msg);
+}
