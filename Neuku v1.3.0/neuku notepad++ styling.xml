@@ -26,7 +26,7 @@
             <Keywords name="Folders in comment, close"></Keywords>
             <Keywords name="Keywords1">and class else for function if or print return super this var while import as try catch finally switch case default static throw break continue public private parallel pwait is typeof&#x000D;&#x000A;</Keywords>
             <Keywords name="Keywords2">true false nil</Keywords>
-            <Keywords name="Keywords3">Clock Call CallIndex DLL string number object random ternary append remove count type set_dll_folder sleep format</Keywords>
+            <Keywords name="Keywords3">Clock Call CallIndex DLL string number object random ternary append remove count type set_dll_folder sleep format extern_set extern_get extern_list extern_create</Keywords>
             <Keywords name="Keywords4"></Keywords>
             <Keywords name="Keywords5"></Keywords>
             <Keywords name="Keywords6"></Keywords>
