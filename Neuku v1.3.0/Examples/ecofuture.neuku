@@ -1,0 +1,234 @@
+import "https://raw.githubusercontent.com/Demigod122111/Neuku-Releases/refs/heads/main/Neuku%20v1.3.0/std.neuku" as std;
+import "https://raw.githubusercontent.com/Demigod122111/Neuku-Releases/refs/heads/main/Neuku%20v1.3.0/web.neuku" as web;
+
+var core = web.CreateServer();
+web.RegisterPrefix(core, "http://localhost:3080/");
+
+// Function to add Tailwind CSS to the head
+function AddHead(document) {
+    var head = document.GetHead();
+    var tailwindcss = document.CreateElement("link");
+    tailwindcss.SingleTag = true;
+    tailwindcss.AddAttribute("href", "https://unpkg.com/tailwindcss@2.2.19/dist/tailwind.min.css");
+    tailwindcss.AddAttribute("rel", "stylesheet");
+    head.AppendChild(tailwindcss);
+	var icon = document.CreateElement("link");
+    icon.SingleTag = true;
+    icon.AddAttribute("href", "https://img.icons8.com/?size=48&id=S6rvNbebKM9i&format=png");
+    icon.AddAttribute("rel", "icon");
+    head.AppendChild(icon);
+}
+
+// Main page setup
+var mainPage = web.HTMLDocument();
+AddHead(mainPage); // Add Tailwind to the main page
+var title = mainPage.CreateElement("title");
+title.InnerText = "EcoFuture";
+mainPage.GetHead().AppendChild(title);
+
+// Body content
+var body = mainPage.GetBody();
+body.AddClasses(["bg-gray-50", "font-sans", "leading-normal", "tracking-normal"]);
+
+// Header section
+var header = mainPage.CreateElement("header");
+header.AddClasses(["bg-green-800", "text-white", "p-6"]);
+
+var headerContainer = mainPage.CreateElement("div");
+headerContainer.AddClasses(["container", "mx-auto", "flex", "justify-between", "items-center"]);
+header.AppendChild(headerContainer);
+
+// Logo
+var logo = mainPage.CreateElement("h1");
+logo.AddClasses(["text-3xl", "font-bold"]);
+logo.InnerText = "EcoFuture";
+headerContainer.AppendChild(logo);
+
+// Navigation menu
+var nav = mainPage.CreateElement("nav");
+var navList = mainPage.CreateElement("ul");
+navList.AddClasses(["flex", "space-x-4"]);
+
+var menuItems = ["Home", "Climate Crisis", "Solutions", "Get Involved", "Contact"];
+for (var i = 0; i < count(menuItems); i++) {
+    var li = mainPage.CreateElement("li");
+    var link = mainPage.CreateElement("a");
+    link.AddAttribute("href", "#" + std.String(menuItems[i]).ToLower().Replace(" ", "-"));
+    link.AddClasses(["hover:underline", "hover:text-gray-300"]);
+    link.InnerText = menuItems[i];
+    li.AppendChild(link);
+    navList.AppendChild(li);
+}
+nav.AppendChild(navList);
+headerContainer.AppendChild(nav);
+
+// Hero section
+var heroSection = mainPage.CreateElement("section");
+heroSection.AddClasses(["bg-green-700", "text-white", "text-center", "py-20"]);
+heroSection.ID = "home";
+
+var heroTitle = mainPage.CreateElement("h2");
+heroTitle.AddClasses(["text-4xl", "font-bold", "mb-6"]);
+heroTitle.InnerText = "Act Now for a Sustainable Future";
+heroSection.AppendChild(heroTitle);
+
+var heroSubtitle = mainPage.CreateElement("p");
+heroSubtitle.AddClasses(["text-xl", "mb-8"]);
+heroSubtitle.InnerText = "Learn how climate change affects our world and what you can do to help.";
+heroSection.AppendChild(heroSubtitle);
+
+var heroButton = mainPage.CreateElement("a");
+heroButton.AddAttribute("href", "#get-involved");
+heroButton.AddClasses(["bg-white", "text-green-700", "px-8", "py-3", "rounded", "hover:bg-gray-200"]);
+heroButton.InnerText = "Join the Movement";
+heroSection.AppendChild(heroButton);
+
+// Climate Crisis Section
+var climateSection = mainPage.CreateElement("section");
+climateSection.AddClasses(["py-20", "bg-gray-100", "text-center"]);
+climateSection.ID = "climate-crisis";
+
+var climateTitle = mainPage.CreateElement("h3");
+climateTitle.AddClasses(["text-3xl", "font-bold", "text-gray-900", "mb-6"]);
+climateTitle.InnerText = "Understanding the Climate Crisis";
+climateSection.AppendChild(climateTitle);
+
+var climateText = mainPage.CreateElement("p");
+climateText.AddClasses(["text-lg", "text-gray-700", "mx-auto", "max-w-3xl", "mb-8"]);
+climateText.InnerText = "Climate change is a real and pressing issue that affects every aspect of our planet. From rising sea levels to extreme weather events, the impact is undeniable.";
+climateSection.AppendChild(climateText);
+
+var climateSubText = mainPage.CreateElement("p");
+climateSubText.AddClasses(["text-gray-700", "mx-auto", "max-w-3xl"]);
+climateSubText.InnerText = "We must act now to mitigate the effects and protect vulnerable communities.";
+climateSection.AppendChild(climateSubText);
+
+// Solutions Section
+var solutionsSection = mainPage.CreateElement("section");
+solutionsSection.AddClasses(["py-20", "bg-white", "text-center"]);
+solutionsSection.ID = "solutions";
+
+var solutionsTitle = mainPage.CreateElement("h3");
+solutionsTitle.AddClasses(["text-3xl", "font-bold", "text-gray-900", "mb-6"]);
+solutionsTitle.InnerText = "Solutions for a Greener Tomorrow";
+solutionsSection.AppendChild(solutionsTitle);
+
+var solutionsList = [
+    ["Renewable Energy", "Transitioning to solar, wind, and hydropower can significantly reduce greenhouse gas emissions."],
+    ["Sustainable Agriculture", "Practicing sustainable farming techniques helps reduce our environmental footprint."],
+    ["Circular Economy", "Promoting recycling and reuse to reduce waste and encourage sustainability."],
+    ["Personal Actions", "Small changes like reducing energy consumption and using eco-friendly products can make a big difference."]
+];
+
+var solutionsGrid = mainPage.CreateElement("div");
+solutionsGrid.AddClasses(["grid", "grid-cols-1", "md:grid-cols-2", "gap-8", "container", "mx-auto"]);
+
+for (var i = 0; i < count(solutionsList); i++) {
+    var solutionCard = mainPage.CreateElement("div");
+    solutionCard.AddClasses(["bg-gray-100", "p-6", "rounded", "shadow-lg"]);
+
+    var solutionTitle = mainPage.CreateElement("h4");
+    solutionTitle.AddClasses(["text-xl", "font-bold", "text-green-700", "mb-4"]);
+    solutionTitle.InnerText = solutionsList[i][0];
+    solutionCard.AppendChild(solutionTitle);
+
+    var solutionDescription = mainPage.CreateElement("p");
+    solutionDescription.AddClasses(["text-gray-700"]);
+    solutionDescription.InnerText = solutionsList[i][1];
+    solutionCard.AppendChild(solutionDescription);
+
+    solutionsGrid.AppendChild(solutionCard);
+}
+solutionsSection.AppendChild(solutionsGrid);
+
+// Get Involved Section
+var involvementSection = mainPage.CreateElement("section");
+involvementSection.AddClasses(["py-20", "bg-green-700", "text-white", "text-center"]);
+involvementSection.ID = "get-involved";
+
+var involvementTitle = mainPage.CreateElement("h3");
+involvementTitle.AddClasses(["text-3xl", "font-bold", "mb-6"]);
+involvementTitle.InnerText = "Get Involved and Make a Difference";
+involvementSection.AppendChild(involvementTitle);
+
+var involvementText = mainPage.CreateElement("p");
+involvementText.AddClasses(["text-lg", "mb-8", "mx-auto", "max-w-3xl"]);
+involvementText.InnerText = "Join the fight against climate change. Whether by advocating, volunteering, or donating, you can help create a sustainable future.";
+involvementSection.AppendChild(involvementText);
+
+var joinButton = mainPage.CreateElement("a");
+joinButton.AddAttribute("href", "#contact");
+joinButton.AddClasses(["bg-white", "text-green-700", "px-8", "py-3", "rounded", "hover:bg-gray-200"]);
+joinButton.InnerText = "Join Us";
+involvementSection.AppendChild(joinButton);
+
+// Contact Section
+var contactSection = mainPage.CreateElement("section");
+contactSection.AddClasses(["py-20", "bg-gray-100", "text-center"]);
+contactSection.ID = "contact";
+
+var contactTitle = mainPage.CreateElement("h3");
+contactTitle.AddClasses(["text-3xl", "font-bold", "text-gray-900", "mb-6"]);
+contactTitle.InnerText = "Contact Us";
+contactSection.AppendChild(contactTitle);
+
+var contactForm = mainPage.CreateElement("form");
+contactForm.AddClasses(["container", "mx-auto", "max-w-lg"]);
+
+var nameInput = mainPage.CreateElement("input");
+nameInput.AddAttribute("type", "text");
+nameInput.AddAttribute("placeholder", "Your Name");
+nameInput.AddClasses(["w-full", "mb-4", "p-2", "rounded", "text-black"]);
+contactForm.AppendChild(nameInput);
+
+var emailInput = mainPage.CreateElement("input");
+emailInput.AddAttribute("type", "email");
+emailInput.AddAttribute("placeholder", "Your Email");
+emailInput.AddClasses(["w-full", "mb-4", "p-2", "rounded", "text-black"]);
+contactForm.AppendChild(emailInput);
+
+var messageInput = mainPage.CreateElement("textarea");
+messageInput.AddAttribute("placeholder", "Your Message");
+messageInput.AddClasses(["w-full", "mb-4", "p-2", "rounded", "text-black"]);
+contactForm.AppendChild(messageInput);
+
+var submitButton = mainPage.CreateElement("button");
+submitButton.AddAttribute("type", "submit");
+submitButton.AddClasses(["bg-green-700", "text-white", "px-8", "py-3", "rounded", "hover:bg-green-600"]);
+submitButton.InnerText = "Send Message";
+contactForm.AppendChild(submitButton);
+
+contactSection.AppendChild(contactForm);
+
+// Footer
+var footer = mainPage.CreateElement("footer");
+footer.AddClasses(["bg-green-800", "text-white", "text-center", "p-4"]);
+
+var footerText = mainPage.CreateElement("p");
+footerText.InnerText = "&copy; 2024 EcoFuture. All rights reserved.";
+footer.AppendChild(footerText);
+
+// Append all sections to the body
+body.AppendChild(header);
+body.AppendChild(heroSection);
+body.AppendChild(climateSection);
+body.AppendChild(solutionsSection);
+body.AppendChild(involvementSection);
+body.AppendChild(contactSection);
+body.AppendChild(footer);
+
+// Set up the webpage
+web.SetPage(core, "home", string(mainPage));
+web.SetIndexPage(core, "home");
+web.Start(core);
+web.PollEvents(core);
+
+
+while (true){
+	try {
+	
+	}
+	catch (var e){
+		print e.message;
+	}
+}
