@@ -216,7 +216,7 @@ class String {
 
 	// Returns String of which all occurrences of the given string (old) are replaced by another (new)
 	function Replace(old, new){
-		this.value = Call(this.CORE, "Replace", this.VALUE, old, new);
+		this.VALUE = Call(this.CORE, "Replace", this.VALUE, old, new);
 		return this;
 	}
 
