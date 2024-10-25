@@ -1,5 +1,5 @@
 function CreateServer(){
-	return Call(DLL(@"https://github.com/Demigod122111/Neuku-Releases/raw/refs/heads/main/Neuku%20v1.3.0/Neuku%20Web.dll", "Core"), "Create");
+	return Call(DLL("https://github.com/Demigod122111/Neuku-Releases/raw/refs/heads/main/Neuku%20v1.3.0/Neuku%20Web.dll", "Core"), "Create");
 }
 
 function RegisterPrefix(core, prefix){
@@ -10,8 +10,8 @@ function Start(core){
 	Call(core, "Start");
 }
 
-function SetPage(core, name, html, css, js){
-	Call(core, "SetPage", name, html, css, js);
+function SetPage(core, name, html){
+	Call(core, "SetPage", name, html, "", "");
 }
 
 function SetIndexPage(core, name){
@@ -27,7 +27,12 @@ function Navigate(core, name){
 }
 
 function PollEvents(core){
-	Call(core, "PollEvents");
+	try {
+		Call(core, "PollEvents");
+	}
+	catch {
+		PollEvents(core);
+	}
 }
 
 function HasSocketMessage(core) {
@@ -41,4 +46,80 @@ function GetSocketMessage(core)
 
 function SendSocketMessage(core, msg) {
 	Call(core, "SendSocketMessage", msg);
+}
+
+class HTMLDocument {
+	private var HTML = "";
+	private var head;
+	private var body;
+	
+	function HTMLDocument() {
+		this.head = HTMLElement("head");
+		this.body = HTMLElement("body");
+	}
+	
+	function GetHead() return this.head;
+	function GetBody() return this.body;
+	
+	function CreateElement(tag) return HTMLElement(tag);
+	
+	function toString() return $"<html>\n{string(this.head)}\n{string(this.body)}\n</html>";
+}
+
+class HTMLElement {
+	private var Tag = "";
+	var ID = "";
+	var ClassNames = [];
+	var Attributes = [];
+	
+	private var Children = [];
+	
+	var InnerText = "";
+	
+	var SingleTag = false;
+	
+	function HTMLElement(tag) this.Tag = tag;
+	
+	function GetClassNames(){
+		var names = "";
+		for (var i = 0; i < count(this.ClassNames); i++) names = $"{names} {string(this.ClassNames[i])}";
+		return names;
+	}
+	
+	function AddClass(name) append(this.ClassNames, name);
+	function AddClasses(names) for (var i = 0; i < count(names); i++) append(this.ClassNames, names[i]);
+	function RemoveClass(name) remove(this.ClassNames, name);
+	function RemoveClasses(names) for (var i = 0; i < count(names); i++) remove(this.ClassNames, names[i]);
+	
+	function GetAttributes() return this.Attributes;
+	
+	private function _GetAttributes(){
+		var attributes = "";
+		for (var i = 0; i < count(this.Attributes); i++) attributes = $"{attributes} {string(this.Attributes[i][0])}=\"{string(this.Attributes[i][1])}\"";
+		return attributes;
+	}
+	
+	
+	function AddAttribute(name, value){
+		append(this.Attributes, [name, value]);
+	}
+	
+	function GetChildren() return this.Children;
+	
+	private function _GetChildren(){
+		var res = "";
+		for (var i = 0; i < count(this.Children); i++) res += $"{this.Children[i]}\n";
+		return res;
+	}
+	
+	function AppendChild(element) append(this.Children, element);
+	function RemoveChild(element) remove(this.Children, element);
+	
+	function toString(){
+		var start = $"<{this.Tag} id=\"{this.ID}\" class=\"{this.GetClassNames()}\" {this._GetAttributes()}";
+		if(this.SingleTag)
+		return $"{start} />";
+		else
+		return $"{start} >{this.InnerText}{this._GetChildren()}</{this.Tag}>";
+	}
 }
