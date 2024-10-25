@@ -1,7 +1,8 @@
-PPong.neuku
-Pong.neuku
-guesser.neuku
-FollowingEyes.neuku
-DarkDash.neuku
-raylib_template.neuku
-webpage.neuku
+PPong.neuku                     | Raylib
+Pong.neuku                      | Raylib
+guesser.neuku                   | Terminal
+FollowingEyes.neuku             | Raylib
+DarkDash.neuku                  | Raylib
+raylib_template.neuku           | Raylib
+webpage.neuku                   | Web
+ecofuture.neuku                 | Web
