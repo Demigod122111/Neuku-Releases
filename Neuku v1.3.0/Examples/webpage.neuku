@@ -1,140 +1,188 @@
-var HTML =
-$"
-<head>
-    <meta charset='UTF-8'>
-    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
-    <title>Welcome to Our Website</title>
-    <link href='https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css' rel='stylesheet'>
-	<link href='https://github.com/Demigod122111/Neuku-Releases/raw/refs/heads/main/Neuku%20v1.3.0/favicon.ico' rel='icon'>
-</head>
-<body>
-
-    <!-- Navbar -->
-    <nav class='navbar navbar-expand-lg navbar-light bg-light'>
-        <div class='container'>
-            <a class='navbar-brand' href='#' id='tm'>BrandName</a>
-            <button class='navbar-toggler' type='button' data-bs-toggle='collapse' data-bs-target='#navbarNav' aria-controls='navbarNav' aria-expanded='false' aria-label='Toggle navigation'>
-                <span class='navbar-toggler-icon'></span>
-            </button>
-            <div class='collapse navbar-collapse' id='navbarNav'>
-                <ul class='navbar-nav ms-auto'>
-                    <li class='nav-item'>
-                        <a class='nav-link active' aria-current='page' href='#'>Home</a>
-                    </li>
-                    <li class='nav-item'>
-                        <a class='nav-link' href='#'>About</a>
-                    </li>
-                    <li class='nav-item'>
-                        <a class='nav-link' href='#'>Services</a>
-                    </li>
-                    <li class='nav-item'>
-                        <a class='nav-link' href='#'>Contact</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
-
-    <!-- Hero Section -->
-    <header class='hero bg-primary text-white text-center py-5'>
-        <div class='container'>
-            <h1 class='display-4'>Welcome to Our Amazing Website!</h1>
-            <p class='lead'>Discover our services and solutions tailored for you.</p>
-            <a href='#' class='btn btn-light btn-lg'>Get Started</a>
-        </div>
-    </header>
-
-    <!-- Features Section -->
-    <section class='features py-5'>
-        <div class='container'>
-            <h2 class='text-center mb-4'>Our Features</h2>
-            <div class='row'>
-                <div class='col-md-4'>
-                    <div class='card mb-4 shadow-sm'>
-                        <div class='card-body'>
-                            <h5 class='card-title'>Feature One</h5>
-                            <p class='card-text' id='ct'>Some quick example text to build on the feature title and make up the bulk of the card's content.</p>
-                        </div>
-                    </div>
-                </div>
-                <div class='col-md-4'>
-                    <div class='card mb-4 shadow-sm'>
-                        <div class='card-body'>
-                            <h5 class='card-title'>Feature Two</h5>
-                            <p class='card-text'>Some quick example text to build on the feature title and make up the bulk of the card's content.</p>
-                        </div>
-                    </div>
-                </div>
-                <div class='col-md-4'>
-                    <div class='card mb-4 shadow-sm'>
-                        <div class='card-body'>
-                            <h5 class='card-title'>Feature Three</h5>
-                            <p class='card-text'>Some quick example text to build on the feature title and make up the bulk of the card's content.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Call to Action Section -->
-    <section class='cta bg-light text-center py-5'>
-        <div class='container'>
-            <h2 class='mb-4'>Ready to take the next step?</h2>
-            <a href='/contact' class='btn btn-primary btn-lg'>Contact Us</a>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class='bg-dark text-white text-center py-3'>
-        <div class='container'>
-            <p class='mb-0'>&copy; 2024 BrandName. All Rights Reserved.</p>
-        </div>
-    </footer>
-
-    <script src='https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js'></script>
-</body>
-";
-
-var CSS = 
-"
-.hero {
-    background: url('https://source.unsplash.com/1600x900/?nature,water') no-repeat center center;
-    background-size: cover;
-}
-
-.features .card {
-    transition: transform 0.2s;
-}
-
-.features .card:hover {
-    transform: scale(1.05);
-}
-
-.cta {
-    background-color: #f8f9fa;
-}
-
-@media (max-width: 768px) {
-    .hero {
-        padding: 5rem 1rem;
-    }
-}
-
-";
-
-var JS =
-"
-// JavaScript code here...
-";
-
-import "https://github.com/Demigod122111/Neuku-Releases/raw/refs/heads/main/Neuku%20v1.3.0/web.neuku" as web;
+import "https://raw.githubusercontent.com/Demigod122111/Neuku-Releases/refs/heads/main/Neuku%20v1.3.0/web.neuku" as web;
 
 var core = web.CreateServer();
 
 web.RegisterPrefix(core, "http://localhost:8080/");
 
-web.SetPage(core, "home", HTML, CSS, JS);
+var document = web.HTMLDocument();
+
+// Add Tailwind CSS to the head
+var head = document.GetHead();
+var tailwindcss = document.CreateElement("link");
+tailwindcss.SingleTag = true;
+tailwindcss.AddAttribute("href", "https://unpkg.com/tailwindcss@2.2.19/dist/tailwind.min.css");
+tailwindcss.AddAttribute("rel", "stylesheet");
+head.AppendChild(tailwindcss);
+
+// Create navbar container
+var navbar = document.CreateElement("nav");
+navbar.AddClasses(["bg-blue-600", "p-4"]);
+
+// Create the div container for logo and menu items
+var container = document.CreateElement("div");
+container.AddClasses(["container", "mx-auto", "flex", "justify-between", "items-center"]);
+navbar.AppendChild(container);
+
+// Create the logo
+var logo = document.CreateElement("a");
+logo.AddAttribute("href", "#");
+logo.AddClasses(["text-white", "text-2xl", "font-bold"]);
+logo.InnerText = "MyLogo";
+container.AppendChild(logo);
+
+// Create the desktop menu (hidden on mobile)
+var menu = document.CreateElement("ul");
+menu.AddClasses(["hidden", "md:flex", "space-x-6", "text-white"]);
+
+// Menu items
+var menuItems = ["Home", "About", "Services", "Contact"];
+for (var i = 0; i < count(menuItems); i++) {
+    var li = document.CreateElement("li");
+    var link = document.CreateElement("a");
+    link.AddAttribute("href", "#");
+    link.AddClasses(["hover:text-gray-300"]);
+    link.InnerText = menuItems[i];
+    li.AppendChild(link);
+    menu.AppendChild(li);
+}
+container.AppendChild(menu);
+
+// Create the hamburger icon (visible on mobile)
+var hamburger = document.CreateElement("div");
+hamburger.AddClasses(["md:hidden"]);
+container.AppendChild(hamburger);
+
+var button = document.CreateElement("button");
+button.AddAttribute("id", "menu-btn");
+button.AddClasses(["text-white", "focus:outline-none"]);
+hamburger.AppendChild(button);
+
+// SVG for the hamburger icon
+var svg = document.CreateElement("svg");
+svg.AddClasses(["w-6", "h-6"]);
+svg.AddAttribute("fill", "none");
+svg.AddAttribute("stroke", "currentColor");
+svg.AddAttribute("viewBox", "0 0 24 24");
+button.AppendChild(svg);
+
+var path = document.CreateElement("path");
+path.AddAttribute("stroke-linecap", "round");
+path.AddAttribute("stroke-linejoin", "round");
+path.AddAttribute("stroke-width", "2");
+path.AddAttribute("d", "M4 6h16M4 12h16m-7 6h7");
+svg.AppendChild(path);
+
+// Mobile menu (hidden initially)
+var mobileMenu = document.CreateElement("div");
+mobileMenu.AddClasses(["hidden", "md:hidden"]);
+mobileMenu.AddAttribute("id", "mobile-menu");
+navbar.AppendChild(mobileMenu);
+
+var mobileMenuList = document.CreateElement("ul");
+mobileMenuList.AddClasses(["flex", "flex-col", "space-y-2", "mt-4", "text-white"]);
+
+// Mobile menu items
+for (var i = 0; i < count(menuItems); i++) {
+    var liMobile = document.CreateElement("li");
+    var linkMobile = document.CreateElement("a");
+    linkMobile.AddAttribute("href", "#");
+    linkMobile.AddClasses(["hover:text-gray-300"]);
+    linkMobile.InnerText = menuItems[i];
+    liMobile.AppendChild(linkMobile);
+    mobileMenuList.AppendChild(liMobile);
+}
+mobileMenu.AppendChild(mobileMenuList);
+
+// Append the navbar to the body
+var body = document.GetBody();
+body.AppendChild(navbar);
+
+// Add the script to toggle mobile menu visibility
+var script = document.CreateElement("script");
+script.InnerText = "
+    var menuBtn = document.getElementById('menu-btn');
+    var mobileMenu = document.getElementById('mobile-menu');
+    menuBtn.addEventListener('click', function() {
+        mobileMenu.classList.toggle('hidden');
+    });
+";
+body.AppendChild(script);
+
+
+// --- Landing Page Sections ---
+
+// Hero Section
+var heroSection = document.CreateElement("section");
+heroSection.AddClasses(["bg-gray-100", "py-20"]);
+
+var heroContainer = document.CreateElement("div");
+heroContainer.AddClasses(["container", "mx-auto", "text-center"]);
+heroSection.AppendChild(heroContainer);
+
+var heroTitle = document.CreateElement("h1");
+heroTitle.AddClasses(["text-5xl", "font-bold", "text-blue-600", "mb-4"]);
+heroTitle.InnerText = "Welcome to Our Landing Page!";
+heroContainer.AppendChild(heroTitle);
+
+var heroSubtitle = document.CreateElement("p");
+heroSubtitle.AddClasses(["text-gray-600", "text-xl", "mb-6"]);
+heroSubtitle.InnerText = "We provide amazing solutions to help your business grow.";
+heroContainer.AppendChild(heroSubtitle);
+
+var heroButton = document.CreateElement("a");
+heroButton.AddAttribute("href", "#");
+heroButton.AddClasses(["bg-blue-600", "text-white", "px-8", "py-3", "rounded", "hover:bg-blue-700"]);
+heroButton.InnerText = "Get Started";
+heroContainer.AppendChild(heroButton);
+
+body.AppendChild(heroSection);
+
+// Features Section
+var featuresSection = document.CreateElement("section");
+featuresSection.AddClasses(["bg-white", "py-12"]);
+
+var featuresContainer = document.CreateElement("div");
+featuresContainer.AddClasses(["container", "mx-auto", "grid", "md:grid-cols-3", "gap-6"]);
+featuresSection.AppendChild(featuresContainer);
+
+var featureTitles = ["Feature 1", "Feature 2", "Feature 3"];
+var featureTexts = [
+    "This is an amazing feature that you will love.",
+    "This feature is designed to bring value.",
+    "Our most powerful feature will impress you!"
+];
+
+for (var i = 0; i < count(featureTitles); i++) {
+    var featureCard = document.CreateElement("div");
+    featureCard.AddClasses(["bg-gray-100", "p-6", "rounded", "shadow-md", "text-center"]);
+
+    var featureTitle = document.CreateElement("h3");
+    featureTitle.AddClasses(["text-xl", "font-bold", "mb-2"]);
+    featureTitle.InnerText = featureTitles[i];
+    featureCard.AppendChild(featureTitle);
+
+    var featureText = document.CreateElement("p");
+    featureText.AddClasses(["text-gray-600"]);
+    featureText.InnerText = featureTexts[i];
+    featureCard.AppendChild(featureText);
+
+    featuresContainer.AppendChild(featureCard);
+}
+
+body.AppendChild(featuresSection);
+
+// Footer
+var footer = document.CreateElement("footer");
+footer.AddClasses(["bg-blue-600", "py-4", "text-white", "text-center"]);
+
+var footerText = document.CreateElement("p");
+footerText.InnerText = "&copy; 2024 MyLogo. All rights reserved.";
+footer.AppendChild(footerText);
+
+body.AppendChild(footer);
+
+
+web.SetPage(core, "home", string(document));
 web.SetIndexPage(core, "home");
 		
 web.Start(core);
@@ -142,7 +190,7 @@ web.PollEvents(core);
 
 while (true){
 	try {
-		
+	
 	}
 	catch (var e){
 		print e.message;
